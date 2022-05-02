@@ -5,7 +5,7 @@ setuptools.setup(
 	version = "0.0.1",
     author='Ruckusist',
     author_email='ruckusist@outlook.com',
-    url='https://ruckusist.com/snake',
+    url='https://ruckusist.com/desksnake',
     packages=setuptools.find_packages(),
     description="A Desksnake Game.",
     long_description_content_type='text/markdown',
@@ -19,8 +19,8 @@ setuptools.setup(
     #########
     entry_points = {
         'console_scripts': [
-            'desksnake=desksnake.desksnake:main',
-            'desksnake_server=desksnake.desksnake:main',
+            'desksnake=desksnake.client:main',
+            'desksnake_server=desksnake:main',
         ]
     },
 )
