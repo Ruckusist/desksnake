@@ -22,18 +22,36 @@ class Show(deskapp.Module):
 
     def page(self, panel):
         panel.addstr(self.index, 4, f"DeskSnakes!  -- {self.username} | score: {self.score}", self.frontend.chess_white)
-
+        index = 3
         # if not self.client.data.get('snake', False): return
         if not self.client.data['snake'].get('grid', False): return
         grid = self.client.data['snake']['grid']
+        players = self.client.data['snake']['players_online']
+        # panel.addstr(index, 4, f"This is the players list: {players}"); index+= 1
+        players_list = ['## Players Online ###']
+        for player in players:
+            player_id = player[0]
+            player_name = player[1]
+            player_score = player[2]
+            if player_name == self.username:
+                self.score = player_score
+            players_list.append( f"{player_id+1}: {player_name} - {player_score}" )
         
-        index = 4
         # panel.addstr(4, 4, f"This is working")  # ; self.index+= 1
-        hardline = "#" * (len(grid)-1)
+        hardline = "#" * (len(grid[1])+2)
         panel.addstr(index, 4, f"{hardline}"); index+= 1
-        for line in grid:
-            l = ''.join(['*' if x == 99 else (str(x) if x else ' ') for x in line])
-            panel.addstr(index, 4, f"#{l}#"); index+= 1
+        for line_num in range(len(grid)):
+            grid_line = grid[line_num]
+            l = ''.join(['*' if x == 99 else (str(x)[-1] if x else ' ') for x in grid_line])
+            game_map_line = f"#{l}#"
+            
+            if line_num in [x for x in range(len(players_list))]:
+                player_line = players_list[line_num]
+            else:
+                player_line = " "*19
+
+            print_line = f"{game_map_line} | {player_line}"
+            panel.addstr(index, 4, print_line); index+= 1
         panel.addstr(index, 4, f"{hardline}"); index+= 2
         panel.addstr(index, 4, f"{self.context['text_output']}"); index+= 1
         panel.addstr(index, 4, f"This is a test"); index+= 1

@@ -43,6 +43,7 @@ class SnakeGame:
         self.engine = engine
         self.should_shutdown = False
         self.map_size = (24, 21)  # google standard map size.
+        # self.map_size = (28, 41)  # ruckus standard map size.
         self.blocked_tiles = []
         self.max_cherries = 3
         self.cherries = []
@@ -106,9 +107,14 @@ class SnakeGame:
                 self.cherries.append(self.get_empty_tile())
 
     def build_report(self) -> None:
+        player_online = []
+        for player_id, user in enumerate(self.engine.users):
+            player = self.engine.users[user]
+            if player.online and player.snake:
+                player_online.append((player_id, player.username, player.snake.score))
         report = {
             'grid': self.grid,
-            'players_online': 0,  # should be a list of (player_num: player name)
+            'players_online': player_online,  # should be a list of (player_num: player name)
         }
         self.engine.publish_data['snake'] = report
 

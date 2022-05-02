@@ -1,7 +1,7 @@
 import random, time
 import deskapp
 from deskserver import ClientSession
-from desksnake.client import Show
+from desksnake.client import Show, ShowAI
 
 ClassID = random.random()
 class Login(deskapp.Module):
@@ -11,13 +11,14 @@ class Login(deskapp.Module):
         super().__init__(app)
         self.app = app
         self.classID = ClassID
-        self.scroll = 1
+        self.scroll = 3
         self.elements = ['Login', 'Exit']
         self.index = 1  # Verticle Print Position
         self.result_message = "Result: Not yet Logged in..."
         self.server_host = 'localhost'
-        self.username = ''
-        self.password = ''
+        # self.server_host = 'ruckusist.com'
+        self.username = 'test'
+        self.password = 'test'
         self.pass_len = 0
         self.client = None  # GameClient()
         # LAST THING!
@@ -62,6 +63,7 @@ class Login(deskapp.Module):
 
     def login(self) -> bool:
         if not self.client:
+            self.app.data['server_host'] = self.server_host
             self.client = ClientSession(SERVER_HOST=self.server_host, VERBOSE=False)
             
         if not self.username or not self.password: 
@@ -84,6 +86,12 @@ class Login(deskapp.Module):
             self.app.logic.setup_panel(Show(self.app))
         except Exception as e:
             self.context['text_output'] = f"{e}"
+
+        try:
+            self.app.logic.setup_panel(ShowAI(self.app))
+        except Exception as e:
+            self.context['text_output'] = f"{e}"
+            
         return True
 
     def end_safely(self):
