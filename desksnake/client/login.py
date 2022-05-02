@@ -15,9 +15,9 @@ class Login(deskapp.Module):
         self.elements = ['Login', 'Exit']
         self.index = 1  # Verticle Print Position
         self.result_message = "Result: Not yet Logged in..."
-        self.server_host = 'localhost'
-        # self.server_host = 'ruckusist.com'
-        self.username = 'test'
+        # self.server_host = 'localhost'
+        self.server_host = 'ruckusist.com'
+        self.username = 'eric'
         self.password = 'test'
         self.pass_len = 0
         self.client = None  # GameClient()
