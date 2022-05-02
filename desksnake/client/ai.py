@@ -7,6 +7,7 @@ class SnakeBot:
         self.client = client
         self.username = username
         self.start_coords = 0
+        self.max_messages = 5
         self.head_coords = 0
         self.heading = 0
         self.lives = 0
@@ -20,7 +21,7 @@ class SnakeBot:
         
 
     def add_message(self, value):
-        if len(self.messages) > 7:
+        if len(self.messages) > self.max_messages:
             self.messages.pop(0)
         self.messages.append(value)
 
@@ -61,18 +62,18 @@ class SnakeBot:
                 if self.id == grid[x][y]:
                     spots.append((x,y))
         if len(spots) < 2: return 0
-        spots.pop(self.start_coords)
+        spots.pop(spots.index(self.start_coords))
         other_spot = spots[0]
         if other_spot[0] > self.start_coords[0]:
             # this is up
             heading = 3
-        if other_spot[0] > self.start_coords[0]:
+        if other_spot[0] < self.start_coords[0]:
             # this is down
             heading = 1
         if other_spot[1] > self.start_coords[1]:
             # this is right
             heading = 2
-        if other_spot[1] > self.start_coords[1]:
+        if other_spot[1] < self.start_coords[1]:
             # this is left
             heading = 4
         return heading
@@ -91,6 +92,11 @@ class SnakeBot:
             ]  # )
             new_grid.append(new_line)
         new_grid[self.start_coords[0]][self.start_coords[1]] = 'X'
+        try:
+            new_grid[self.head_coords[0]][self.head_coords[1]] = '&'
+        except Exception as e:
+            self.add_message(e)
+            pass
         return [''.join(x) for x in new_grid]
 
     def movev2(self):
@@ -113,7 +119,7 @@ class SnakeBot:
         self.add_message( f"Whats the Nearest CHerry?" )
 
         
-
+        
         # new_heading = random.randint(0,3)
         # if new_heading != self.heading:
         #     # self.message = f"Moving to a new Heading {new_heading} from {self.heading}                     "
@@ -152,7 +158,7 @@ class SnakeBot:
                     self.heading = self.get_heading()
                     time.sleep(.01)
                 else: break
-            self.update_head()
+            # self.update_head()
             self.grid = self.bot_view()
             self.get_score()
             new_grid = self.bot_view()
@@ -166,7 +172,7 @@ class SnakeBot:
                 self.start_coords = 0
                 self.heading = 0
 
-            self.move()
+            # self.move()
 
 
 ClassID = random.random()
