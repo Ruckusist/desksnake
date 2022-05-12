@@ -108,13 +108,19 @@ class SnakeGame:
 
     def build_report(self) -> None:
         player_online = []
+        extra_data = []
         for player_id, user in enumerate(self.engine.users):
             player = self.engine.users[user]
             if player.online and player.snake:
                 player_online.append((player_id, player.username, player.snake.score))
+                extra_data.append((player_id, player.snake.head_coords, player.snake.filled, player.snake.facing))
+        for player_id, user in enumerate(self.engine.users):
+            player = self.engine.users[user]
+
         report = {
             'grid': self.grid,
             'players_online': player_online,  # should be a list of (player_num: player name)
+            'extra_data': extra_data
         }
         self.engine.publish_data['snake'] = report
 
@@ -210,8 +216,9 @@ class SnakeGame:
                 player.snake.move()
 
         # REPORT
+        
+        self.build_grid()
         self.build_report()
-
         # AND TIME!
         runtime = timer() - start_time
         self.frame_times.append(runtime)

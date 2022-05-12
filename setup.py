@@ -20,7 +20,7 @@ setuptools.setup(
     entry_points = {
         'console_scripts': [
             'desksnake=desksnake.client:main',
-            'desksnake_server=desksnake:main',
+            'desksnake-server=desksnake:main',
         ]
     },
 )

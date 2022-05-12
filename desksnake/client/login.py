@@ -15,12 +15,12 @@ class Login(deskapp.Module):
         self.elements = ['Login', 'Exit']
         self.index = 1  # Verticle Print Position
         self.result_message = "Result: Not yet Logged in..."
-        # self.server_host = 'localhost'
-        self.server_host = 'ruckusist.com'
-        self.username = 'eric'
-        self.password = 'test'
+        self.server_host = 'localhost'
+        # self.server_host = 'ruckusist.com'
+        self.username = 'SnakeUser'
+        self.password = 'SnakePass'
         self.pass_len = 0
-        self.client = None  # GameClient()
+        self.client = ClientSession(VERBOSE=False)
         # LAST THING!
         self.register_module()
 
@@ -62,21 +62,30 @@ class Login(deskapp.Module):
         return False
 
     def login(self) -> bool:
-        if not self.client:
-            self.app.data['server_host'] = self.server_host
-            self.client = ClientSession(SERVER_HOST=self.server_host, VERBOSE=False)
+        failed = 0
+        success = 0
+        while True:
+            time.sleep(.1)
+            if failed >= 2: break
+            if success: break
+            if not self.client.connected:
+                connected = self.client.connect()
+                if not connected: 
+                    failed += 1
+                    time.sleep(.5)
+                continue
             
-        if not self.username or not self.password: 
-            self.context['text_output'] = f"Please Enter Username and Password"
-            return False
-
-        self.client.login(username=self.username, password=self.password)
-
-        # # ARE WE NOW IN A GOOD LOGIN?
-        time.sleep(1)
-        if not self.client.logged_in:
-            self.context['text_output'] += f"Log in Failed."
-            return False
+            if not self.client.logged_in:
+                if not self.username and not self.password:
+                    self.context['text_output'] = f"Please Enter Username and Password"
+                    break
+                self.client.login(self.username, self.password)
+                time.sleep(.1)
+                continue
+            
+            success = True
+        # successful login.
+        self.app.data['server_host'] = self.server_host
         self.client.username = self.username
         self.app.data['client'] = {
             'client': self.client,
@@ -88,7 +97,9 @@ class Login(deskapp.Module):
             self.context['text_output'] = f"{e}"
 
         try:
-            self.app.logic.setup_panel(ShowAI(self.app))
+            # for name in ['Contra', 'Blunder', 'Nemesis']:
+            for bot in self.app.data['bots']:
+                self.app.logic.setup_panel(ShowAI(self.app, bot))
         except Exception as e:
             self.context['text_output'] = f"{e}"
             
@@ -96,6 +107,7 @@ class Login(deskapp.Module):
 
     def end_safely(self):
         # if self.client:
+        
         #     self.client.end_safely()
         pass
 
