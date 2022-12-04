@@ -16,4 +16,5 @@ dist/
 junk/
 
 *.txt
-users.data
+*.data
+*.log
